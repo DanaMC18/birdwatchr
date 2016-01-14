@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Birdwatchr Demo</title>
+  <script src="bower_components/handlebars/handlebars.js"></script>
+  <script src="bower_components/jquery/dist/jquery.js"></script>
+  <script src="js/main.js"> </script>
+</head>
+<body>
+
+  <a id="bird-data" href="#"> Bird Data </a>
+
+  <form id="lat-long" action="/geocode">
+    <h3> Geolocator </h3>
+    <label for="address"> Address: </label>
+    <input type="text" name="address" placeholder="1600 Pennsylvania Ave NW, Washington DC 20500">
+    <input id='lat-long-btn' type="submit">
+  </form>
+
+
+  <div id="birds-list">
+    <script id="sightings-template" type="x-handlebars">
+      <h3> Bird: {{ bird }} </h3>
+      <p> When: {{ date }} </p>
+      <p> Where: {{ address }} </p>
+      <p> Lat/Long: {{ lat }}, {{ lng }} </p>
+    </script>
+  </div>
+
+</body>
+</html>
