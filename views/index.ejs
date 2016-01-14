@@ -18,6 +18,10 @@
     <p> When: <%= sighting.date %> </p>
     <p> Where: <%= sighting.address %> </p>
     <p> Lat/Long: <%=sighting.lat %>, <%= sighting.lng %> </p>
+    <form action="/sightings/<%=sighting._id%>/edit" >
+      <input type="hidden" value="<%=sighting._id %>">
+      <input type="submit" value="Edit">
+    </form>
     <% }) %>
 </body>
 </html>

@@ -1,12 +1,14 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
+var methodOverride = require('method-override');
 var geocoder = require('geocoder');
 
 // Configuration
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
+app.use(methodOverride('_method'))
 
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId;
@@ -31,10 +33,6 @@ app.get('/', function(req, res){
   })
 });
 
-app.get('/sightings/new', function (req, res){
-  res.render('form');
-})
-
 
 app.post('/sightings', function (req, res){
   console.log(req.body);
@@ -42,7 +40,6 @@ app.post('/sightings', function (req, res){
   var date = req.body.sighting.date;
   var address = req.body.sighting.address
   geocoder.geocode(address, function (err, data){
-    // console.log(data.results[0].geometry.location.lat, data.results[0].geometry.location.lat);
     var lat = data.results[0].geometry.location.lat;
     var lng = data.results[0].geometry.location.lng;
     db.collection('sightings').insert(
@@ -54,6 +51,31 @@ app.post('/sightings', function (req, res){
     });
     res.redirect('/');
   })
+})
+
+
+app.get('/sightings/new', function (req, res){
+  res.render('form');
+})
+
+
+app.get('/sightings/:id/edit', function (req, res){
+  db.collection('sightings').findOne({_id: ObjectId(req.params.id)},
+    function (err, data){
+    res.render('edit', {sighting: data})
+  })
+})
+
+
+app.patch('/sightings/:id', function (req, res){
+  console.log(req.params)
+  console.log(req.body)
+  db.collection('sightings').update(
+    {_id: ObjectId(req.params.id)},
+    {$set: {bird: req.body.bird, date: req.body.date, address: req.body.address}},
+    function (err, data) {
+      res.redirect('/');
+    })
 })
 
 
@@ -74,6 +96,18 @@ app.get('/demo_sightings', function (req, res){
     res.json(data);
   })
 })
+
+
+app.post('/geolocate', function (req, res){
+  console.log(req.body.address);
+  geocoder.geocode(req.body.address, function (err, data){
+    var lat = data.results[0].geometry.location.lat;
+    var lng = data.results[0].geometry.location.lng;
+    var latLong = {'address': req.body.address, 'lat': lat, 'lng': lng};
+    res.json(latLong);
+  })
+})
+
 
 app.listen(process.env.PORT || 3000);
 

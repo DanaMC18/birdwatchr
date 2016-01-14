@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit</title>
+</head>
+<body>
+
+  <h2>Edit</h2>
+  <form method="post" action="/sightings/<%=sighting._id%>?_method=patch">
+    <label for="bird"> Bird: </label>
+    <input name="bird" type="text" value="<%=sighting.bird%>">
+    <br>
+    <label for="date"> When: </label>
+    <input name="date" type="date" value="<%=sighting.date%>">
+    <br>
+    <label for="address"> Where? </label>
+    <input name="address" type="text" value="<%=sighting.address%>">
+    <br>
+    <input type="submit">
+  </form>
+
+<form>
+</form>
+
+</body>
+</html>
