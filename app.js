@@ -62,13 +62,7 @@ app.post('/sightings', function (req, res){
       if (err){
         console.log(err);
       } else {
-        // res.redirect('/');
-        res.json({'bird': birdName, 
-      'date': date, 
-      'address': address,
-      'lat': lat,
-      'lng': lng
-    })
+        res.json({'bird': birdName, 'date': date, 'address': address, 'lat': lat, 'lng': lng})
       }
     });
   })
