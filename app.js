@@ -5,6 +5,7 @@ var methodOverride = require('method-override');
 var geocoder = require('geocoder');
 
 // Configuration
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
@@ -27,18 +28,27 @@ MongoClient.connect(mongoUrl, function (err, database){
 
 // Routes
 app.get('/', function(req, res){
-  db.collection('sightings').find({}).sort({$natural: -1}).limit(3).toArray(function (err, data){
+  db.collection('sightings').find({}).sort({date: -1}).limit(3).toArray(function (err, data){
     var recentThree = data;
-    res.render('index', {sightings: data});
+    // console.log(data);
+    res.render('index');
   })
 });
 
 
+app.get('/sightings', function (req, res){
+  db.collection('sightings').find({}).sort({date: -1}).limit(3).toArray(function (err, data){
+    // console.log(data);
+    res.json(data);
+  })
+})
+
+
 app.post('/sightings', function (req, res){
   console.log(req.body);
-  var birdName = req.body.sighting.bird;
-  var date = req.body.sighting.date;
-  var address = req.body.sighting.address
+  var birdName = req.body.bird;
+  var date = req.body.date;
+  var address = req.body.address;
   geocoder.geocode(address, function (err, data){
     var lat = data.results[0].geometry.location.lat;
     var lng = data.results[0].geometry.location.lng;
@@ -48,8 +58,19 @@ app.post('/sightings', function (req, res){
       'address': address,
       'lat': lat,
       'lng': lng
+    }, function (err, results){
+      if (err){
+        console.log(err);
+      } else {
+        // res.redirect('/');
+        res.json({'bird': birdName, 
+      'date': date, 
+      'address': address,
+      'lat': lat,
+      'lng': lng
+    })
+      }
     });
-    res.redirect('/');
   })
 })
 
